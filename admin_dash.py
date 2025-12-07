@@ -12,15 +12,15 @@ st.title("🛠️ Admin Dashboard – Feedback Overview")
 if not os.path.exists(DATA_FILE):
     st.warning("⚠️ No feedback submitted yet! The 'data.csv' file has not been created.")
 else:
-    # Read the data written by the User Dashboard
+    
     df = pd.read_csv(DATA_FILE)
 
     if df.empty:
         st.info("ℹ️ The log is currently empty.")
     else:
-        # 1. LIVE TABLE OF SUBMISSIONS
+        
         st.subheader("📄 Recent Feedback Submissions")
-        # Displaying the required columns: User Rating, Review, AI Summary, Recommended Actions
+        # Displaying the required columns: user Rating, Review, AI Summary, Recommended Actions
         st.dataframe(
             df[["timestamp", "rating", "review", "ai_summary", "recommended_action"]], 
             use_container_width=True,
@@ -55,8 +55,3 @@ else:
         # Creating a proper count for the bar chart
         rating_counts = df["rating"].value_counts().sort_index()
         st.bar_chart(rating_counts)
-
-# --- Pro Tip for Deployment ---
-# Since you have two files (user_dashboard.py and admin_dashboard.py), 
-# the easiest way to deploy both is to create a 'Main' page (streamlit_app.py) 
-# and use Streamlit's Multipage features by putting these in a 'pages' folder.
