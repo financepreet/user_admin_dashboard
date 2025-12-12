@@ -9,7 +9,7 @@ from langchain_groq import ChatGroq
 llm = ChatGroq(
     model="openai/gpt-oss-120b", 
     temperature=0.3, # Thoda variety ke liye 0.3 rakha hai
-    groq_api_key=GROQ_API_KEY # Security ke liye environment variables use karein
+    groq_api_key="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" # Security ke liye environment variables use karein
 )
 
 DATA_FILE = "feedback_data.csv"
@@ -73,4 +73,5 @@ if st.button("Submit Feedback"):
         # User dashboard requirement: Display returned AI response
         st.markdown("---")
         st.subheader("Official Response:")
+
         st.info(ai_response)
