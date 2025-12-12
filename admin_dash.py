@@ -3,7 +3,22 @@ import pandas as pd
 import os
 
 # --- Configuration ---
-DATA_FILE = "feedback_data.csv" # Ensure this matches your User Dashboard file name
+DATA_FILE = "feedback_data.csv" 
+
+@st.cache_data(ttl=5) 
+def load_data():
+    """Loads data from the shared CSV file."""
+    if not os.path.exists(DATA_FILE):
+        return pd.DataFrame()
+    try:
+        df = pd.read_csv(DATA_FILE)
+        # Ensure correct column types
+        if 'rating' in df.columns:
+             df['rating'] = pd.to_numeric(df['rating'], errors='coerce').fillna(0).astype(int)
+        return df
+    except Exception as e:
+        st.error(f"Error loading data: {e}")
+        return pd.DataFrame()
 
 st.set_page_config(page_title="Feedback Analytics", layout="wide")
 st.title("🛠️ Admin Dashboard – Feedback Overview")
@@ -12,15 +27,15 @@ st.title("🛠️ Admin Dashboard – Feedback Overview")
 if not os.path.exists(DATA_FILE):
     st.warning("⚠️ No feedback submitted yet! The 'data.csv' file has not been created.")
 else:
-    
+    # Read the data written by the User Dashboard
     df = pd.read_csv(DATA_FILE)
 
     if df.empty:
         st.info("ℹ️ The log is currently empty.")
     else:
-        
+        # 1. LIVE TABLE OF SUBMISSIONS
         st.subheader("📄 Recent Feedback Submissions")
-        # Displaying the required columns: user Rating, Review, AI Summary, Recommended Actions
+        # Displaying the required columns: User Rating, Review, AI Summary, Recommended Actions
         st.dataframe(
             df[["timestamp", "rating", "review", "ai_summary", "recommended_action"]], 
             use_container_width=True,
@@ -55,3 +70,4 @@ else:
         # Creating a proper count for the bar chart
         rating_counts = df["rating"].value_counts().sort_index()
         st.bar_chart(rating_counts)
+

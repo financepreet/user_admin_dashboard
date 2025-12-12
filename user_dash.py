@@ -2,24 +2,24 @@ import streamlit as st
 import pandas as pd
 import os
 from datetime import datetime
+from config import GROQ_API_KEY
 from langchain_groq import ChatGroq
 
-# 1. Initialize LLM (Sahi model name aur method use karein)
-# 'llama3-8b-8192' Groq par bohot fast aur accurate hai.
+# 1. Initialize LLM 
 llm = ChatGroq(
     model="openai/gpt-oss-120b", 
     temperature=0.3, # Thoda variety ke liye 0.3 rakha hai
-    groq_api_key="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" # Security ke liye environment variables use karein
+    groq_api_key=GROQ_API_KEY # Security ke liye environment variables use karein
 )
 
 DATA_FILE = "feedback_data.csv"
 
-# 2. Shared Data Source create karna (Agar nahi hai toh)
+# 2. Shared Data Source create karna
 if not os.path.exists(DATA_FILE):
     df_init = pd.DataFrame(columns=["timestamp","rating","review","ai_response","ai_summary","recommended_action"])
     df_init.to_csv(DATA_FILE, index=False)
 
-# 3. Corrected AI function (langchain invoke method use karein)
+
 def ai_generate(prompt: str):
     try:
         response = llm.invoke(prompt)
@@ -54,7 +54,7 @@ if st.button("Submit Feedback"):
             ai_summary = ai_generate(summary_prompt)
             recommended_action = ai_generate(action_prompt)
 
-        # Update CSV (Shared Data Source)
+        # Update CSV 
         new_entry = {
             "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             "rating": rating,
@@ -64,7 +64,7 @@ if st.button("Submit Feedback"):
             "recommended_action": recommended_action
         }
 
-        # Data write karein (Atomic operation approach)
+        # Data write karein 
         df_new = pd.DataFrame([new_entry])
         df_new.to_csv(DATA_FILE, mode='a', header=False, index=False)
 
