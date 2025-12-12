@@ -2,7 +2,6 @@ import streamlit as st
 import pandas as pd
 import os
 from datetime import datetime
-from config import GROQ_API_KEY
 from langchain_groq import ChatGroq
 
 # 1. Initialize LLM 
@@ -75,3 +74,4 @@ if st.button("Submit Feedback"):
         st.subheader("Official Response:")
 
         st.info(ai_response)
+
